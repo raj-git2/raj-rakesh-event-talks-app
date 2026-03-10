@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Talks Today</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-color: #212529;
+            --border-color: #dee2e6;
+            --break-color: #e9ecef;
+            --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+        }
+
+        .search-container {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #search-input {
+            width: 300px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        #search-button, #clear-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            transition: background-color 0.3s;
+        }
+        
+        #clear-button {
+            background-color: var(--secondary-color);
+        }
+
+        #search-button:hover {
+            background-color: #0056b3;
+        }
+        
+        #clear-button:hover {
+            background-color: #5a6268;
+        }
+
+        .schedule {
+            margin-top: 2rem;
+        }
+
+        .schedule-item {
+            display: flex;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--surface-color);
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .time-slot {
+            flex: 0 0 120px;
+            padding: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            background-color: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .talk-details, .break-details {
+            padding: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .break-details {
+            background-color: var(--break-color);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .talk-details h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+
+        .speakers {
+            font-style: italic;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .categories {
+            margin-top: 1rem;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background-color: #e2e3e5;
+            color: #343a40;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            font-weight: 500;
+        }
+        
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            padding: 2rem;
+            background-color: var(--surface-color);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-item {
+                flex-direction: column;
+            }
+            .time-slot {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            #search-input {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Tech Talks Today</h1>
+            <p>A one-day conference for the curious minds of the tech industry.</p>
+        </header>
+
+        <main>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search by category (e.g., AI, Web)">
+                <button id="search-button">Search</button>
+                <button id="clear-button">Clear</button>
+            </div>
+
+            <div id="schedule-container" class="schedule">
+                <!-- Schedule will be rendered here by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const talksData = [
+            {
+                title: "The Future of AI: Beyond Large Language Models",
+                speakers: ["Dr. Evelyn Reed"],
+                category: ["AI", "Machine Learning", "Future Tech"],
+                duration: 60,
+                description: "A deep dive into the next wave of artificial intelligence, exploring novel architectures and their potential to revolutionize industries."
+            },
+            {
+                title: "Modern Web Architectures: Building for Scale",
+                speakers: ["Johnathan Chen", "Maria Garcia"],
+                category: ["Web Development", "Architecture", "Scalability"],
+                duration: 60,
+                description: "Learn how to design and build robust, scalable web applications using modern micro-frontend and serverless patterns."
+            },
+            {
+                title: "Navigating the Cloud Native Landscape",
+                speakers: ["Samira Khan"],
+                category: ["Cloud Native", "DevOps", "Kubernetes"],
+                duration: 60,
+                description: "An overview of the CNCF landscape, focusing on key projects like Kubernetes, Prometheus, and Envoy to build a resilient infrastructure."
+            },
+            {
+                title: "Practical Data Engineering for AI/ML",
+                speakers: ["David Lee"],
+                category: ["Data Engineering", "AI", "Pipelines"],
+                duration: 60,
+                description: "Discover best practices for building efficient and reliable data pipelines that feed machine learning models with high-quality data."
+            },
+            {
+                title: "Frontend Performance Masterclass",
+                speakers: ["Aisha Williams", "Ben Carter"],
+                category: ["Web Development", "Performance"],
+                duration: 60,
+                description: "Techniques and tools to dramatically improve the speed and responsiveness of your web applications, from image optimization to code splitting."
+            },
+            {
+                title: "The GitOps Revolution: Supercharging Your CI/CD",
+                speakers: ["Kenji Tanaka"],
+                category: ["DevOps", "CI/CD", "GitOps"],
+                duration: 60,
+                description: "Explore how GitOps principles can automate and simplify your deployment pipelines, making them more reliable and auditable."
+            }
+        ];
+
+        const scheduleLayout = [
+            { time: "10:00 AM - 11:00 AM", type: "talk", talkIndex: 0 },
+            { time: "11:00 AM - 11:10 AM", type: "break", title: "Transition" },
+            { time: "11:10 AM - 12:10 PM", type: "talk", talkIndex: 1 },
+            { time: "12:10 PM - 12:20 PM", type: "break", title: "Transition" },
+            { time: "12:20 PM - 01:20 PM", type: "talk", talkIndex: 2 },
+            { time: "01:20 PM - 02:20 PM", type: "break", title: "Lunch Break" },
+            { time: "02:20 PM - 03:20 PM", type: "talk", talkIndex: 3 },
+            { time: "03:20 PM - 03:30 PM", type: "break", title: "Transition" },
+            { time: "03:30 PM - 04:30 PM", type: "talk", talkIndex: 4 },
+            { time: "04:30 PM - 04:40 PM", type: "break", title: "Transition" },
+            { time: "04:40 PM - 05:40 PM", type: "talk", talkIndex: 5 }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleContainer = document.getElementById('schedule-container');
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const clearButton = document.getElementById('clear-button');
+
+            function renderSchedule(filteredTalkIndices = null) {
+                scheduleContainer.innerHTML = '';
+                let talksFound = false;
+
+                const displayedItems = scheduleLayout.filter(item => {
+                    if (item.type === 'break') return true;
+                    return filteredTalkIndices === null || filteredTalkIndices.includes(item.talkIndex);
+                });
+                
+                if (filteredTalkIndices !== null && displayedItems.every(item => item.type === 'break')) {
+                    // This case means a search was performed but yielded no talks.
+                } else if (displayedItems.length > 0) {
+                     talksFound = true;
+                }
+
+                if (!talksFound) {
+                    scheduleContainer.innerHTML = `<div class="no-results">No talks found for your search query.</div>`;
+                    return;
+                }
+                
+                displayedItems.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'schedule-item';
+
+                    if (item.type === 'talk') {
+                        const talk = talksData[item.talkIndex];
+                        itemEl.innerHTML = `
+                            <div class="time-slot">${item.time}</div>
+                            <div class="talk-details">
+                                <h3>${talk.title}</h3>
+                                <div class="speakers">${talk.speakers.join(', ')}</div>
+                                <p>${talk.description}</p>
+                                <div class="categories">
+                                    ${talk.category.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    } else { // break
+                        itemEl.innerHTML = `
+                            <div class="time-slot">${item.time}</div>
+                            <div class="break-details">
+                                <strong>${item.title}</strong>
+                            </div>
+                        `;
+                    }
+                    scheduleContainer.appendChild(itemEl);
+                });
+            }
+
+            function filterTalks() {
+                const query = searchInput.value.trim().toLowerCase();
+                if (!query) {
+                    renderSchedule(null); // Render all if query is empty
+                    return;
+                }
+
+                const filteredIndices = talksData.reduce((acc, talk, index) => {
+                    const hasCategory = talk.category.some(cat => cat.toLowerCase().includes(query));
+                    if (hasCategory) {
+                        acc.push(index);
+                    }
+                    return acc;
+                }, []);
+                
+                renderSchedule(filteredIndices);
+            }
+            
+            function clearSearch() {
+                searchInput.value = '';
+                renderSchedule(null);
+            }
+
+            searchButton.addEventListener('click', filterTalks);
+            searchInput.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    filterTalks();
+                }
+            });
+            clearButton.addEventListener('click', clearSearch);
+
+            // Initial render
+            renderSchedule(null);
+        });
+    </script>
+</body>
+</html>
